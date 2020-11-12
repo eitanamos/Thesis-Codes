@@ -2,7 +2,7 @@ import xlrd
 import xlsxwriter
 
 # Output Excel
-    #Enter location of 'actualattack' file
+#Enter location of 'actualattack' file
 w_workbook = xlsxwriter.Workbook(
     r"C:\Users\user\Desktop\Master's Degree\THESIS\ThesisWork\Thesis\Codes\ImposDiff\\actualattack.xlsx")
 w_sheet = w_workbook.add_worksheet()
