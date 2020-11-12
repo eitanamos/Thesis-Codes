@@ -1,0 +1,428 @@
+def important_lists(num_of_plaintext_pairs):
+    def numofmatchesbtwLists(list1, list2):
+        i = 0
+        count = 0
+        while i < len(list1):
+            if (list1[i] in list2):
+                count = count + 1
+            i = i + 1
+        return count
+    def same_difference(input_diff, num_of_p_pairs):
+
+            def change_to_be_hex(str):
+                return int(str, base=16)
+
+            def hexop(num1, num2):
+                res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+                res1 = hex(res1)
+                res = str(res1).replace("0x", "").upper()
+                if len(res) < 2:
+                    res = "000" + res
+                elif len(res) < 3:
+                    res = "00" + res
+                elif len(res) < 4:
+                    res = "0" + res
+                return res
+
+            def number_to_hex(number):
+                number = number
+                if int(number) > 65536:
+                    return "Can't convert it to 4 character hexadecimal number"
+                elif int(number) < 65537 and int(number) > -1:
+                    number = hex(number)
+                    number = number[2:]
+                    hex_representation = number.zfill(4)
+                    return hex_representation.upper()
+
+            number_list = list(range(int(num_of_p_pairs)))
+
+            new_hexa_list = []
+            i = 0
+            while i < len(number_list):
+                new_hexa_list.append(number_to_hex(number_list[i]))
+                i = i + 1
+
+            new_new_hexa_list = []
+            j = 0
+            while j < len(new_hexa_list):
+                new_new_hexa_list.append(hexop(new_hexa_list[j], input_diff))
+                j = j + 1
+
+            def two_numbers_into_tuple(number1, number2):
+                brackets = [number1, number2]
+                tuple_representation = brackets
+                return tuple_representation
+
+            m = 0
+            bracket_list = []
+            while m < len(new_new_hexa_list):
+                bracket_list.append(two_numbers_into_tuple(new_hexa_list[m], new_new_hexa_list[m]))
+                m = m + 1
+
+            def get_uniques(links):
+                my_set = set([])
+                my_selection = []
+                for l in links:
+                    s = "".join(sorted(l))
+                    if not s in my_set:
+                        my_set.add(s)
+                        my_selection.append(l)
+                return my_selection
+
+            bracket_list = get_uniques(bracket_list)
+
+            def flatten(input):
+                new_list = []
+                for i in input:
+                    for j in i:
+                        new_list.append(j)
+                return new_list
+
+            bracket_list = flatten(bracket_list)
+
+            return bracket_list
+    def baby_rijndael(plaintext):
+        key = '5C92'
+        RCon = ["10", "20", "40", "80"]
+
+        def change_to_be_hex(str):
+            return int(str, base=16)
+
+        def rot(w):
+            p1 = w[0:int(len(w) / 2)]
+            p2 = w[int(len(w) / 2):len(w)]
+            return p2 + p1
+
+        def hexop(num1, num2):
+            res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+            res1 = hex(res1)
+            res = str(res1).replace("0x", "").upper()
+            if len(res) < 2:
+                res = "0" + res
+            return res
+
+        def sBox(w):
+            dicto = {"0": "A", "1": "4", "2": "3", "3": "B", "4": "8", "5": "E", "6": "2", "7": "C", "8": "5", "9": "7",
+                     "A": "6", "B": "F", "C": "0", "D": "1", "E": "9", "F": "D"}
+            word = ""
+            for c in w:
+                word += dicto[c]
+            return word
+
+        def createW2(word, i):
+            i = i - 1
+            w0 = word[0:int(len(word) / 2)]
+            w1 = word[int(len(word) / 2):len(word)]
+            w_mid = hexop(sBox(rot(w1)), RCon[i])
+            return hexop(w_mid, w0)
+
+        def createWi(wi, wi2, i):
+            i = i - 1
+            w_mid = hexop(sBox(rot(wi2)), RCon[i])
+            res = hexop(w_mid, wi)
+            if len(res) < 2:
+                res = "0" + res
+            return res
+
+        def shiftrows(w):
+            return w[0:int(len(w) * 1 / 4)] + w[int(len(w) * 3 / 4):int(len(w))] + w[
+                                                                                   int(len(w) * 1 / 2):int(
+                                                                                       len(w) * 3 / 4)] + w[
+                                                                                                          int(
+                                                                                                              len(
+                                                                                                                  w) * 1 / 4):int(
+                                                                                                              len(
+                                                                                                                  w) * 1 / 2)]
+
+        mixColumn = {
+            "0": {"0": "00", "1": "5D", "2": "A9", "3": "F4", "4": "71", "5": "2C", "6": "D8", "7": "85", "8": "E2",
+                  "9": "BF",
+                  "A": "4B", "B": "16", "C": "93", "D": "CE", "E": "3A", "F": "67"},
+            "1": {"0": "D5", "1": "88", "2": "7C", "3": "21", "4": "A4", "5": "F9", "6": "0D", "7": "50", "8": "37",
+                  "9": "6A",
+                  "A": "9E", "B": "C3", "C": "46", "D": "1B", "E": "EF", "F": "B2"},
+            "2": {"0": "9A", "1": "C7", "2": "33", "3": "6E", "4": "EB", "5": "B6", "6": "42", "7": "1F", "8": "78",
+                  "9": "25",
+                  "A": "D1", "B": "8C", "C": "09", "D": "54", "E": "A0", "F": "FD"},
+            "3": {"0": "4F", "1": "12", "2": "E6", "3": "BB", "4": "3E", "5": "63", "6": "97", "7": "CA", "8": "AD",
+                  "9": "F0",
+                  "A": "04", "B": "59", "C": "DC", "D": "81", "E": "75", "F": "28"},
+            "4": {"0": "17", "1": "4A", "2": "BE", "3": "E3", "4": "66", "5": "3B", "6": "CF", "7": "92", "8": "F5",
+                  "9": "A8",
+                  "A": "5C", "B": "01", "C": "84", "D": "D9", "E": "2D", "F": "70"},
+            "5": {"0": "C2", "1": "9F", "2": "6B", "3": "36", "4": "B3", "5": "EE", "6": "1A", "7": "47", "8": "20",
+                  "9": "7D",
+                  "A": "89", "B": "D4", "C": "51", "D": "0C", "E": "F8", "F": "A5"},
+            "6": {"0": "8D", "1": "D0", "2": "24", "3": "79", "4": "FC", "5": "A1", "6": "55", "7": "08", "8": "6F",
+                  "9": "32",
+                  "A": "C6", "B": "9B", "C": "1E", "D": "43", "E": "B7", "F": "EA"},
+            "7": {"0": "58", "1": "05", "2": "F1", "3": "AC", "4": "29", "5": "74", "6": "80", "7": "DD", "8": "BA",
+                  "9": "E7",
+                  "A": "13", "B": "4E", "C": "CB", "D": "96", "E": "62", "F": "3F"},
+            "8": {"0": "2E", "1": "73", "2": "87", "3": "DA", "4": "5F", "5": "02", "6": "F6", "7": "AB", "8": "CC",
+                  "9": "91",
+                  "A": "65", "B": "38", "C": "BD", "D": "E0", "E": "14", "F": "49"},
+            "9": {"0": "FB", "1": "A6", "2": "52", "3": "0F", "4": "8A", "5": "D7", "6": "23", "7": "7E", "8": "19",
+                  "9": "44",
+                  "A": "B0", "B": "ED", "C": "68", "D": "35", "E": "C1", "F": "9C"},
+            "A": {"0": "B4", "1": "E9", "2": "1D", "3": "40", "4": "C5", "5": "98", "6": "6C", "7": "31", "8": "56",
+                  "9": "0B",
+                  "A": "FF", "B": "A2", "C": "27", "D": "7A", "E": "8E", "F": "D3"},
+            "B": {"0": "61", "1": "3C", "2": "C8", "3": "95", "4": "10", "5": "4D", "6": "B9", "7": "E4", "8": "83",
+                  "9": "DE",
+                  "A": "2A", "B": "77", "C": "F2", "D": "AF", "E": "5B", "F": "06"},
+            "C": {"0": "39", "1": "64", "2": "90", "3": "CD", "4": "48", "5": "15", "6": "E1", "7": "BC", "8": "DB",
+                  "9": "86",
+                  "A": "72", "B": "2F", "C": "AA", "D": "F7", "E": "03", "F": "5E"},
+            "D": {"0": "EC", "1": "B1", "2": "45", "3": "18", "4": "9D", "5": "C0", "6": "34", "7": "69", "8": "0E",
+                  "9": "53",
+                  "A": "A7", "B": "FA", "C": "7F", "D": "22", "E": "D6", "F": "8B"},
+            "E": {"0": "A3", "1": "FE", "2": "0A", "3": "57", "4": "D2", "5": "8F", "6": "7B", "7": "26", "8": "41",
+                  "9": "1C",
+                  "A": "E8", "B": "B5", "C": "30", "D": "6D", "E": "99", "F": "C4"},
+            "F": {"0": "76", "1": "2B", "2": "DF", "3": "82", "4": "07", "5": "5A", "6": "AE", "7": "F3", "8": "94",
+                  "9": "C9",
+                  "A": "3D", "B": "60", "C": "E5", "D": "B8", "E": "4C", "F": "11"}
+        }
+
+        w0 = key[0:2]
+        w1 = key[2:4]
+        w2 = createW2(key, 1)
+        w3 = hexop(w1, w2)
+        w4 = createWi(w2, w3, 2)
+        w5 = hexop(w3, w4)
+        w6 = createWi(w4, w5, 3)
+        w7 = hexop(w5, w6)
+        w8 = createWi(w6, w7, 4)
+        w9 = hexop(w7, w8)
+
+        K0 = w0 + w1
+        K1 = w2 + w3
+        K2 = w4 + w5
+        K3 = w6 + w7
+        K4 = w8 + w9
+
+        def mixC(word):
+            diction = mixColumn
+            newWord = ""
+            for i in range(len(word)):
+                if i % 2 != 0:
+                    continue
+                newWord += diction[word[i + 1]][word[i]]
+            return newWord
+
+        def preOp(word):
+            res = sBox(word)
+            res = shiftrows(res)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        def addRoundKey(word, w2, w3):
+            mixW = mixC(word)
+            res = hexop(mixW, w2 + w3)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        def addRoundKeyi(word, wi, wi2):
+            res = mixC(word)
+            res = hexop(res, wi + wi2)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        def addRoundKey4(word):
+            res = hexop(word, w8 + w9)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        def whitening(text, key):
+            res = hexop(text, key)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        # whitening step
+        res = whitening(plaintext, key)
+
+        # round 1
+        res = preOp(res)
+        res = addRoundKey(res, w2, w3)
+
+        # round 2
+        res = preOp(res)
+        res = addRoundKeyi(res, w4, w5)
+
+        # round 3
+        res = preOp(res)
+        res = addRoundKeyi(res, w6, w7)
+
+        # round 4
+        res = preOp(res)
+        res = addRoundKey4(res)
+        ciphertext = res
+
+        return ciphertext
+    def change_to_be_hex(str):
+        return int(str, base=16)
+    def invsBox(w):
+        dicto = {"0": "C", "1": "D", "2": "6", "3": "2", "4": "1", "5": "8", "6": "A", "7": "9", "8": "4", "9": "E",
+                 "A": "0", "B": "3", "C": "7", "D": "F", "E": "5", "F": "B"}
+        word = ""
+        for c in w:
+            word += dicto[c]
+        return word
+    def hexop(num1, num2):
+        res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+        res1 = hex(res1)
+        res = str(res1).replace("0x", "").upper()
+        if len(res) < 2:
+            res = "0" + res
+        return res
+    def whitening(text, key):
+        res = hexop(text, key)
+        while (len(res) < 4):
+            res = "0" + res
+        return res
+    def inv_switch_rows(four_word_input):
+        a = list(four_word_input)
+        b = a[1]
+        c = a[3]
+        a[1] = c
+        a[3] = b
+        new_word = "".join(a)
+        return new_word
+    impos_diff = ["00", "16", "17", "2C", "2E", "39", "3A", "4B", "4F", "5D", "58", "61", "67", "71", "76", "85", "8D",
+                  "93", "9A", "A3", "A9", "B4", "BF", "C2", "CE", "D5", "D8", "E2", "EC", "F4", "FB"]
+    list_of_keys = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009', '000A', '000B',
+                    '000C', '000D', '000E', '000F', '1000', '1001', '1002', '1003', '1004', '1005', '1006', '1007',
+                    '1008', '1009', '100A', '100B',
+                    '100C', '100D', '100E', '100F', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007',
+                    '2008', '2009', '200A', '200B',
+                    '200C', '200D', '200E', '200F', '3000', '3001', '3002', '3003', '3004', '3005', '3006', '3007',
+                    '3008', '3009', '300A', '300B',
+                    '300C', '300D', '300E', '300F', '4000', '4001', '4002', '4003', '4004', '4005', '4006', '4007',
+                    '4008', '4009', '400A', '400B',
+                    '400C', '400D', '400E', '400F', '5000', '5001', '5002', '5003', '5004', '5005', '5006', '5007',
+                    '5008', '5009', '500A', '500B',
+                    '500C', '500D', '500E', '500F', '6000', '6001', '6002', '6003', '6004', '6005', '6006', '6007',
+                    '6008', '6009', '600A', '600B',
+                    '600C', '600D', '600E', '600F', '7000', '7001', '7002', '7003', '7004', '7005', '7006', '7007',
+                    '7008', '7009', '700A', '700B',
+                    '700C', '700D', '700E', '700F', '8000', '8001', '8002', '8003', '8004', '8005', '8006', '8007',
+                    '8008', '8009', '800A', '800B',
+                    '800C', '800D', '800E', '800F', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007',
+                    '9008', '9009', '900A', '900B',
+                    '900C', '900D', '900E', '900F', 'A000', 'A001', 'A002', 'A003', 'A004', 'A005', 'A006', 'A007',
+                    'A008', 'A009', 'A00A', 'A00B',
+                    'A00C', 'A00D', 'A00E', 'A00F', 'B000', 'B001', 'B002', 'B003', 'B004', 'B005', 'B006', 'B007',
+                    'B008', 'B009', 'B00A', 'B00B',
+                    'B00C', 'B00D', 'B00E', 'B00F', 'C000', 'C001', 'C002', 'C003', 'C004', 'C005', 'C006', 'C007',
+                    'C008', 'C009', 'C00A', 'C00B',
+                    'C00C', 'C00D', 'C00E', 'C00F', 'D000', 'D001', 'D002', 'D003', 'D004', 'D005', 'D006', 'D007',
+                    'D008', 'D009', 'D00A', 'D00B',
+                    'D00C', 'D00D', 'D00E', 'D00F', 'E000', 'E001', 'E002', 'E003', 'E004', 'E005', 'E006', 'E007',
+                    'E008', 'E009', 'E00A', 'E00B',
+                    'E00C', 'E00D', 'E00E', 'E00F', 'F000', 'F001', 'F002', 'F003', 'F004', 'F005', 'F006', 'F007',
+                    'F008', 'F009', 'F00A', 'F00B',
+                    'F00C', 'F00D', 'F00E', 'F00F']
+    a = list(map(baby_rijndael, same_difference('6000', num_of_plaintext_pairs)[-200:]))
+
+    gg_gg=[]
+    j=0
+    while j<len(a):
+        i = 0
+        count=0
+        while i<len(list_of_keys):
+            res1 = whitening(a[j], list_of_keys[i])
+            res2 = whitening(a[j+1], list_of_keys[i])
+            res1 = inv_switch_rows(res1)
+            res2 = inv_switch_rows(res2)
+            res1 = invsBox(res1)
+            res2 = invsBox(res2)
+            diff = hexop(res1, res2)
+            while len(diff) < 4:
+                diff = "0" + diff
+
+            if diff[0:2] in impos_diff:
+                count=count+1
+
+            i=i+1
+
+
+
+        gg_gg.append(count)
+        j=j+2
+
+
+    final_list = []
+    final_list.append(gg_gg)
+
+    e=[]
+    new_li=[]
+    j=0
+    while j<len(a):
+        i = 0
+        count=0
+        d=[]
+        while i<len(list_of_keys):
+            res1 = whitening(a[j], list_of_keys[i])
+            res2 = whitening(a[j+1], list_of_keys[i])
+            res1 = inv_switch_rows(res1)
+            res2 = inv_switch_rows(res2)
+            res1 = invsBox(res1)
+            res2 = invsBox(res2)
+            diff = hexop(res1, res2)
+            while len(diff) < 4:
+                diff = "0" + diff
+
+            if diff[0:2] in impos_diff:
+                count=count+1
+                d.append(list_of_keys[i])
+                list_of_keys.remove(list_of_keys[i])
+                i=i
+            else:
+                i=i+1
+
+
+        e.append(d)
+        new_li.append(count)
+        j=j+2
+
+    def replace_zeros(partial_key):
+        if len(partial_key) == 4:
+            s = ''
+            s = partial_key[0] + '??' + partial_key[-1]
+            return s
+
+    u = []
+    i = 0
+    while i < len(e):
+        g = []
+        j = 0
+        while j < len(e[i]):
+            g.append(replace_zeros((e[i])[j]))
+            j = j + 1
+        u.append(g)
+        i = i + 1
+
+    new_new_li = list(range(len(new_li)))
+    new_new_li[0] = 256-new_li[0]
+    j=1
+    while j<len(new_li):
+        new_new_li[j] = new_new_li[j-1]- new_li[j]
+        j=j+1
+
+    final_list.append(new_li )
+    final_list.append(new_new_li )
+    final_list.append(u)
+
+    def multline(liste):
+        c = ''
+        for i in liste:
+            c = c + str(i) + '\n'
+        return c
+    return multline(final_list)
+print(important_lists(100))
