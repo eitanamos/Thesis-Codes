@@ -1,0 +1,197 @@
+import win32com.client
+ExcelApp = win32com.client.GetActiveObject("Excel.Application")
+ExcelWrkbook = ExcelApp.Workbooks(1)
+ExcelWrkSht = ExcelWrkbook.Worksheets(1)
+def key_generator(input_key):
+    li = list(range(256))
+
+    def number_to_hex(number):
+        number = hex(number)
+        number = number[2:]
+        hex_representation = number.zfill(2)
+        return hex_representation.upper()
+    ap_li=[]
+    i=0
+    while i<256:
+        ap_li.append(number_to_hex(i))
+        i=i+1
+    g=[]
+    j=0
+    while j<256:
+        g.append(ap_li[j][0] +input_key[1] +ap_li[j][-1] + input_key[-1])
+        j=j+1
+    return g
+def reversekeyschedulecipherfour(lastroundkey):
+    def change_to_be_hex(str):
+        return int(str, base=16)
+    def rot(w):
+        p1 = w[0:int(len(w) / 2)]
+        p2 = w[int(len(w) / 2):len(w)]
+        return p2 + p1
+    def hexop(num1, num2):
+        res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+        res1 = hex(res1)
+        res = str(res1).replace("0x", "").upper()
+        if len(res) < 2:
+            res = "0" + res
+        return res
+    def sBox(w):
+        dicto = {"0": "E", "1": "4", "2": "D", "3": "1", "4": "2", "5": "F", "6": "B", "7": "8", "8": "3", "9": "A",
+                 "A": "6", "B": "C", "C": "5", "D": "9", "E": "0", "F": "7"}
+        word = ""
+        for c in w:
+            word += dicto[c]
+        return word
+    def createWi(wi, wi2, i):
+        i = i - 1
+        w_mid = hexop(sBox(rot(wi2)), RCon[i])
+        res = hexop(w_mid, wi)
+        if len(res) < 2:
+            res = "0" + res
+        return res
+    RCon = ["80", "40", "20", "10"]
+
+    w9 = lastroundkey[2:4]
+    w8 = lastroundkey[0:2]
+    w7 = hexop(w8, w9)
+    w6 = createWi(w8, w7, 1)
+    w5 = hexop(w6, w7)
+    w4 = createWi(w6, w5, 2)
+    w3 = hexop(w4, w5)
+    w2 = createWi(w4, w3, 3)
+    w1 = hexop(w2, w3)
+    w0 = createWi(w2, w1, 4)
+
+    K4 = w8 + w9
+    K3 = w6 + w7
+    K2 = w4 + w5
+    K1 = w2 + w3
+    K0 = w0 + w1
+    return K0
+def correct_key_retrieval(key):
+    def change_to_be_hex(str):
+        return int(str, base=16)
+    def sBox(w):
+        dicto = {"0": "E", "1": "4", "2": "D", "3": "1", "4": "2", "5": "F", "6": "B", "7": "8", "8": "3", "9": "A",
+                 "A": "6", "B": "C", "C": "5", "D": "9", "E": "0", "F": "7"}
+        word = ""
+        for c in w:
+            word += dicto[c]
+        return word
+    def perm(word):
+        res = format(int(str(word), 16), "016b")
+        res = list(res)
+        resperm = []
+        i = 0
+        while i < 16:
+            if i == 15:
+                resperm.append(res[i])
+            else:
+                resperm.append(res[(i * 4) % 15])
+            i = i + 1
+        res = ''.join(resperm)
+        res = [res[i:i + 4] for i in range(0, len(res), 4)]
+
+        def dictionary(res):
+            dicto = {"0000": "0", "0001": "1", "0010": "2", "0011": "3", "0100": "4", "0101": "5", "0110": "6",
+                     "0111": "7", "1000": "8", "1001": "9",
+                     "1010": "A", "1011": "B", "1100": "C", "1101": "D", "1110": "E", "1111": "F"}
+            word = ""
+            for i in res:
+                word = word + dicto[i]
+            return word
+
+        res = dictionary(res)
+
+        return res
+    def rot(w):
+        p1 = w[0:int(len(w) / 2)]
+        p2 = w[int(len(w) / 2):len(w)]
+        return p2 + p1
+    def hexop(num1, num2):
+        res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+        res1 = hex(res1)
+        res = str(res1).replace("0x", "").upper()
+        if len(res) < 2:
+            res = "0" + res
+        return res
+    def createW2(word, i):
+        i = i - 1
+        w0 = word[0:int(len(word) / 2)]
+        w1 = word[int(len(word) / 2):len(word)]
+        w_mid = hexop(sBox(rot(w1)), RCon[i])
+        return hexop(w_mid, w0)
+    def createWi(wi, wi2, i):
+        i = i - 1
+        w_mid = hexop(sBox(rot(wi2)), RCon[i])
+        res = hexop(w_mid, wi)
+        if len(res) < 2:
+            res = "0" + res
+        return res
+    def whitening(text, key):
+        res = hexop(text, key)
+        while (len(res) < 4):
+            res = "0" + res
+        return res
+    def roundi(word, wi, wi2):
+        res = sBox(word)
+        while (len(res) < 4):
+            res = "0" + res
+        res = perm(res)
+        res = hexop(res, wi + wi2)
+        while (len(res) < 4):
+            res = "0" + res
+        return res
+    def last_round(word):
+        res = sBox(word)
+        while (len(res) < 4):
+            res = "0" + res
+        res = hexop(res, w8 + w9)
+        while (len(res) < 4):
+            res = "0" + res
+        return res
+    key = key
+    RCon = ["10", "20", "40", "80"]
+    w0 = key[0:2]
+    w1 = key[2:4]
+    w2 = createW2(key, 1)
+    w3 = hexop(w1, w2)
+    w4 = createWi(w2, w3, 2)
+    w5 = hexop(w3, w4)
+    w6 = createWi(w4, w5, 3)
+    w7 = hexop(w5, w6)
+    w8 = createWi(w6, w7, 4)
+    w9 = hexop(w7, w8)
+    K0 = w0 + w1
+    K1 = w2 + w3
+    K2 = w4 + w5
+    K3 = w6 + w7
+    K4 = w8 + w9
+    
+    plaintext = "0000"
+    # whitening step
+    res = whitening(plaintext, key)
+
+    # round 1
+    res = roundi(res, w2, w3)
+
+    # round 2
+    res = roundi(res, w4, w5)
+
+    # round 3
+    res = roundi(res, w6, w7)
+
+    # round 4
+    res = last_round(res)
+
+    return res
+
+i = 1
+while i < 257:
+    Cell1 = ExcelWrkSht.Cells(i,1)
+    Cell1.Value = key_generator('?1?C')[i-1]
+    Cell2 = ExcelWrkSht.Cells(i,2)
+    Cell2.Value = reversekeyschedulecipherfour(str(Cell1))
+    Cell3 = ExcelWrkSht.Cells(i,3)
+    Cell3.Value = correct_key_retrieval(str(Cell2))
+    i= i+1
