@@ -1,0 +1,177 @@
+def impossible_differences(input_difference):
+    def possibledifferences(input_difference):
+        afterkeyaddition = input_difference
+        change_to_list = list(afterkeyaddition)
+        aftersbox = {
+            "0": "0",
+            "1": "124689E",
+            "2": "2389ACF",
+            "3": "1478ACD",
+            "4": "12567AF",
+            "5": "4679BCF",
+            "6": "568ABCE",
+            "7": "3678DEF",
+            "8": "13458BF",
+            "9": "159CDEF",
+            "A": "1236BCD",
+            "B": "23457CE",
+            "C": "34569AD",
+            "D": "24ABDEF",
+            "E": "1379ABE",
+            "F": "25789BD"
+        }
+        first_letter = aftersbox[change_to_list[0]]
+        second_letter = aftersbox[change_to_list[1]]
+        third_letter = aftersbox[change_to_list[2]]
+        fourth_letter = aftersbox[change_to_list[3]]
+        new_first_letter = list(first_letter)
+        new_second_letter = list(second_letter)
+        new_third_letter = list(third_letter)
+        new_fourth_letter = list(fourth_letter)
+        completely_new_list = []
+
+        l = 0
+        while l < len(new_fourth_letter):
+            k = 0
+            while k < len(new_third_letter):
+                j = 0
+                while j < len(new_second_letter):
+                    i = 0
+                    while i < len(new_first_letter):
+                        new_list = new_first_letter[i] + new_second_letter[j] + new_third_letter[k] + new_fourth_letter[
+                            l]
+                        completely_new_list.append(new_list)
+                        i = i + 1
+                    j = j + 1
+                k = k + 1
+            l = l + 1
+
+        def switch_rows(four_word_input):
+            a = list(four_word_input)
+            b = a[1]
+            c = a[3]
+            a[1] = c
+            a[3] = b
+            new_word = "".join(a)
+            return new_word
+
+        really_new_list = []
+        i = 0
+        while i < len(completely_new_list):
+            really_new_list.append(switch_rows(completely_new_list[i]))
+            i = i + 1
+
+        def mixC(word):
+            mixColumn = {
+                "0": {"0": "00", "1": "5D", "2": "A9", "3": "F4", "4": "71", "5": "2C", "6": "D8", "7": "85", "8": "E2",
+                      "9": "BF",
+                      "A": "4B", "B": "16", "C": "93", "D": "CE", "E": "3A", "F": "67"},
+                "1": {"0": "D5", "1": "88", "2": "7C", "3": "21", "4": "A4", "5": "F9", "6": "0D", "7": "50", "8": "37",
+                      "9": "6A",
+                      "A": "9E", "B": "C3", "C": "46", "D": "1B", "E": "EF", "F": "B2"},
+                "2": {"0": "9A", "1": "C7", "2": "33", "3": "6E", "4": "EB", "5": "B6", "6": "42", "7": "1F", "8": "78",
+                      "9": "25",
+                      "A": "D1", "B": "8C", "C": "09", "D": "54", "E": "A0", "F": "FD"},
+                "3": {"0": "4F", "1": "12", "2": "E6", "3": "BB", "4": "3E", "5": "63", "6": "97", "7": "CA", "8": "AD",
+                      "9": "F0",
+                      "A": "04", "B": "59", "C": "DC", "D": "81", "E": "75", "F": "28"},
+                "4": {"0": "17", "1": "4A", "2": "BE", "3": "E3", "4": "66", "5": "3B", "6": "CF", "7": "92", "8": "F5",
+                      "9": "A8",
+                      "A": "5C", "B": "01", "C": "84", "D": "D9", "E": "2D", "F": "70"},
+                "5": {"0": "C2", "1": "9F", "2": "6B", "3": "36", "4": "B3", "5": "EE", "6": "1A", "7": "47", "8": "20",
+                      "9": "7D",
+                      "A": "89", "B": "D4", "C": "51", "D": "0C", "E": "F8", "F": "A5"},
+                "6": {"0": "8D", "1": "D0", "2": "24", "3": "79", "4": "FC", "5": "A1", "6": "55", "7": "08", "8": "6F",
+                      "9": "32",
+                      "A": "C6", "B": "9B", "C": "1E", "D": "43", "E": "B7", "F": "EA"},
+                "7": {"0": "58", "1": "05", "2": "F1", "3": "AC", "4": "29", "5": "74", "6": "80", "7": "DD", "8": "BA",
+                      "9": "E7",
+                      "A": "13", "B": "4E", "C": "CB", "D": "96", "E": "62", "F": "3F"},
+                "8": {"0": "2E", "1": "73", "2": "87", "3": "DA", "4": "5F", "5": "02", "6": "F6", "7": "AB", "8": "CC",
+                      "9": "91",
+                      "A": "65", "B": "38", "C": "BD", "D": "E0", "E": "14", "F": "49"},
+                "9": {"0": "FB", "1": "A6", "2": "52", "3": "0F", "4": "8A", "5": "D7", "6": "23", "7": "7E", "8": "19",
+                      "9": "44",
+                      "A": "B0", "B": "ED", "C": "68", "D": "35", "E": "C1", "F": "9C"},
+                "A": {"0": "B4", "1": "E9", "2": "1D", "3": "40", "4": "C5", "5": "98", "6": "6C", "7": "31", "8": "56",
+                      "9": "0B",
+                      "A": "FF", "B": "A2", "C": "27", "D": "7A", "E": "8E", "F": "D3"},
+                "B": {"0": "61", "1": "3C", "2": "C8", "3": "95", "4": "10", "5": "4D", "6": "B9", "7": "E4", "8": "83",
+                      "9": "DE",
+                      "A": "2A", "B": "77", "C": "F2", "D": "AF", "E": "5B", "F": "06"},
+                "C": {"0": "39", "1": "64", "2": "90", "3": "CD", "4": "48", "5": "15", "6": "E1", "7": "BC", "8": "DB",
+                      "9": "86",
+                      "A": "72", "B": "2F", "C": "AA", "D": "F7", "E": "03", "F": "5E"},
+                "D": {"0": "EC", "1": "B1", "2": "45", "3": "18", "4": "9D", "5": "C0", "6": "34", "7": "69", "8": "0E",
+                      "9": "53",
+                      "A": "A7", "B": "FA", "C": "7F", "D": "22", "E": "D6", "F": "8B"},
+                "E": {"0": "A3", "1": "FE", "2": "0A", "3": "57", "4": "D2", "5": "8F", "6": "7B", "7": "26", "8": "41",
+                      "9": "1C",
+                      "A": "E8", "B": "B5", "C": "30", "D": "6D", "E": "99", "F": "C4"},
+                "F": {"0": "76", "1": "2B", "2": "DF", "3": "82", "4": "07", "5": "5A", "6": "AE", "7": "F3", "8": "94",
+                      "9": "C9",
+                      "A": "3D", "B": "60", "C": "E5", "D": "B8", "E": "4C", "F": "11"}
+            }
+            diction = mixColumn
+            newWord = ""
+            for i in range(len(word)):
+                if i % 2 != 0:
+                    continue
+                newWord += diction[word[i + 1]][word[i]]
+            return newWord
+
+        truly_new_list = []
+        i = 0
+        while i < len(really_new_list):
+            truly_new_list.append(mixC(really_new_list[i]))
+            i = i + 1
+        afterkeyaddition2 = truly_new_list
+        return afterkeyaddition2
+    b = input_difference
+    def allpossibledifferences(input_difference):
+        a = input_difference
+        m = 0
+        second_round_differences = []
+        while m < len(possibledifferences(a)):
+            second_round_differences.append(possibledifferences(possibledifferences(a)[m]))
+            m = m + 1
+        li = []
+        for sublist in second_round_differences:
+            li.extend(sublist)
+        return li
+    n = 0
+    third_round_differences = []
+    while n < len(allpossibledifferences(b)):
+        third_round_differences.append(possibledifferences(allpossibledifferences(b)[n]))
+        n = n + 1
+    li2 = []
+    for sublist in third_round_differences:
+        li2.extend(sublist)
+    erase_duplicates = list(dict.fromkeys(li2))
+    sorted_possible_differences = sorted(erase_duplicates)
+
+    def change_to_be_hex(str):
+        return int(str, base=16)
+    i =0
+    int_sorted_final_possible_differnces = []
+    while i<len(sorted_possible_differences):
+        int_sorted_final_possible_differnces.append(change_to_be_hex(sorted_possible_differences[i]))
+        i =i+1
+
+    list_of_numbers = list(range(int(65536)))
+
+    int_possible_differnces = []
+    j=0
+    while j<len(list_of_numbers):
+        if list_of_numbers[j] not in int_sorted_final_possible_differnces:
+            int_possible_differnces.append(list_of_numbers[j])
+        j = j+1
+    def number_to_hex(number):
+        return hex(number)[2:].zfill(4).upper()
+    k =0
+    list_of_impossible_differences = []
+    while k<len(int_possible_differnces):
+        list_of_impossible_differences.append(number_to_hex(int_possible_differnces[k]))
+        k= k+1
+    return list_of_impossible_differences
+print(impossible_differences('6000'))
