@@ -1,0 +1,176 @@
+
+import xlrd
+import xlsxwriter
+
+# Input Excel
+#Enter location of saved 'initial' file
+r_workbook1 = xlrd.open_workbook(r"C:\Users\user\Desktop\Master's Degree\THESIS\ThesisWork\Thesis\Codes\Diff\\initial.xlsx")
+r_sheet1 = r_workbook1.sheet_by_index(0)
+#Enter location of saved 'attack' file
+r_workbook2 = xlrd.open_workbook(r"C:\Users\user\Desktop\Master's Degree\THESIS\ThesisWork\Thesis\Codes\Diff\\attack.xlsx")
+r_sheet2 = r_workbook2.sheet_by_index(0)
+
+# Output Excel
+#Enter location of saved 'attack' file
+w_workbook = xlsxwriter.Workbook(r"C:\Users\user\Desktop\Master's Degree\THESIS\ThesisWork\Thesis\Codes\Diff\\attack.xlsx")
+w_sheet = w_workbook.add_worksheet()
+
+def same_difference(input_diff, num_of_p_pairs):
+
+    def change_to_be_hex(str):
+        return int(str, base=16)
+    def hexop(num1, num2):
+        res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+        res1 = hex(res1)
+        res = str(res1).replace("0x", "").upper()
+        if len(res) < 2:
+            res = "000" + res
+        elif len(res) < 3:
+            res = "00" + res
+        elif len(res) < 4:
+            res = "0" + res
+        return res
+    def number_to_hex(number):
+        number = number
+        if int(number) > 65536:
+            return "Can't convert it to 4 character hexadecimal number"
+        elif int(number) < 65537 and int(number) > -1:
+            number = hex(number)
+            number = number[2:]
+            hex_representation = number.zfill(4)
+            return hex_representation.upper()
+
+    number_list = list(range(int(num_of_p_pairs)))
+
+    new_hexa_list = []
+    i = 0
+    while i < len(number_list):
+        new_hexa_list.append(number_to_hex(number_list[i]))
+        i = i + 1
+
+    new_new_hexa_list = []
+    j = 0
+    while j < len(new_hexa_list):
+        new_new_hexa_list.append(hexop(new_hexa_list[j], input_diff))
+        j = j + 1
+
+    def two_numbers_into_tuple(number1, number2):
+        brackets = [number1, number2]
+        tuple_representation = brackets
+        return tuple_representation
+
+    m = 0
+    bracket_list = []
+    while m < len(new_new_hexa_list):
+        bracket_list.append(two_numbers_into_tuple(new_hexa_list[m], new_new_hexa_list[m]))
+        m = m + 1
+
+    def get_uniques(links):
+        my_set = set([])
+        my_selection = []
+        for l in links:
+            s = "".join(sorted(l))
+            if not s in my_set:
+                my_set.add(s)
+                my_selection.append(l)
+        return my_selection
+
+    bracket_list = get_uniques(bracket_list)
+    def flatten(input):
+        new_list = []
+        for i in input:
+            for j in i:
+                new_list.append(j)
+        return new_list
+    bracket_list =flatten(bracket_list)
+
+    return bracket_list
+number_of_unique_plaintext_pairs = int(len(same_difference('00B0', 400))/2)
+
+def attack(ciphertext1,ciphertext2,key):
+    def change_to_be_hex(str):
+        return int(str, base=16)
+    def invsBox(w):
+        dicto = {"0": "E", "1": "3", "2": "4", "3": "8", "4": "1", "5": "C", "6": "A", "7": "F", "8": "7", "9": "D",
+                 "A": "9", "B": "6", "C": "B", "D": "2", "E": "0", "F": "5"}
+        word = ""
+        for c in w:
+            word += dicto[c]
+        return word
+    def hexop(num1, num2):
+        res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+        res1 = hex(res1)
+        res = str(res1).replace("0x", "").upper()
+        if len(res) < 2:
+            res = "0" + res
+        return res
+    def whitening(text, key):
+        res = hexop(text, key)
+        while (len(res) < 4):
+            res = "0" + res
+        return res
+
+    res1 = whitening(ciphertext1, key)
+    res2 = whitening(ciphertext2, key)
+
+    res1 =invsBox(res1)
+    res2 = invsBox(res2)
+    diff = hexop(res1,res2)
+    while (len(diff) < 3):
+        diff = "00" + diff
+    while (len(diff) < 4):
+        diff = "0" + diff
+    return diff
+
+partial_subkey_list = ["?0?0", "?0?1","?0?2", "?0?3", "?0?4", "?0?5",
+                       "?0?6", "?0?7", "?0?8", "?0?9", "?0?A", "?0?B",
+                       "?0?C", "?0?D", "?0?E", "?0?F", "?1?0", "?1?1","?1?2", "?1?3", "?1?4", "?1?5",
+                       "?1?6", "?1?7", "?1?8", "?1?9", "?1?A", "?1?B",
+                       "?1?C", "?1?D", "?1?E", "?1?F", "?2?0", "?2?1","?2?2", "?2?3", "?2?4", "?2?5",
+                       "?2?6", "?2?7", "?2?8", "?2?9", "?2?A", "?2?B",
+                       "?2?C", "?2?D", "?2?E", "?2?F", "?3?0", "?3?1","?3?2", "?3?3", "?3?4", "?3?5",
+                       "?3?6", "?3?7", "?3?8", "?3?9", "?3?A", "?3?B",
+                       "?3?C", "?3?D", "?3?E", "?3?F", "?4?0", "?4?1","?4?2", "?4?3", "?4?4", "?4?5",
+                       "?4?6", "?4?7", "?4?8", "?4?9", "?4?A", "?4?B",
+                       "?4?C", "?4?D", "?4?E", "?4?F", "?5?0", "?5?1","?5?2", "?5?3", "?5?4", "?5?5",
+                       "?5?6", "?5?7", "?5?8", "?5?9", "?5?A", "?5?B",
+                       "?5?C", "?5?D", "?5?E", "?5?F", "?6?0", "?6?1","?6?2", "?6?3", "?6?4", "?6?5",
+                       "?6?6", "?6?7", "?6?8", "?6?9", "?6?A", "?6?B",
+                       "?6?C", "?6?D", "?6?E", "?6?F", "?7?0", "?7?1","?7?2", "?7?3", "?7?4", "?7?5",
+                       "?7?6", "?7?7", "?7?8", "?7?9", "?7?A", "?7?B",
+                       "?7?C", "?7?D", "?7?E", "?7?F", "?8?0", "?8?1","?8?2", "?8?3", "?8?4", "?8?5",
+                       "?8?6", "?8?7", "?8?8", "?8?9", "?8?A", "?8?B",
+                       "?8?C", "?8?D", "?8?E", "?8?F", "?9?0", "?9?1","?9?2", "?9?3", "?9?4", "?9?5",
+                       "?9?6", "?9?7", "?9?8", "?9?9", "?9?A", "?9?B",
+                       "?9?C", "?9?D", "?9?E", "?9?F", "?A?0", "?A?1","?A?2", "?A?3", "?A?4", "?A?5",
+                       "?A?6", "?A?7", "?A?8", "?A?9", "?A?A", "?A?B",
+                       "?A?C", "?A?D", "?A?E", "?A?F", "?B?0", "?B?1","?B?2", "?B?3", "?B?4", "?B?5",
+                       "?B?6", "?B?7", "?B?8", "?B?9", "?B?A", "?B?B",
+                       "?B?C", "?B?D", "?B?E", "?B?F", "?C?0", "?C?1","?C?2", "?C?3", "?C?4", "?C?5",
+                       "?C?6", "?C?7", "?C?8", "?C?9", "?C?A", "?C?B",
+                       "?C?C", "?C?D", "?C?E", "?C?F", "?D?0", "?D?1","?D?2", "?D?3", "?D?4", "?D?5",
+                       "?D?6", "?D?7", "?D?8", "?D?9", "?D?A", "?D?B",
+                       "?D?C", "?D?D", "?D?E", "?D?F", "?E?0", "?E?1","?E?2", "?E?3", "?E?4", "?E?5",
+                       "?E?6", "?E?7", "?E?8", "?E?9", "?E?A", "?E?B",
+                       "?E?C", "?E?D", "?E?E", "?E?F", "?F?0", "?F?1","?F?2", "?F?3", "?F?4", "?F?5",
+                       "?F?6", "?F?7", "?F?8", "?F?9", "?F?A", "?F?B",
+                       "?F?C", "?F?D", "?F?E", "?F?F" ]
+# Copy the original data
+for i in range(256):
+    w_sheet.write(i,0,partial_subkey_list[i])
+
+
+j=0
+while j < 256:
+    i = 0
+    while i < number_of_unique_plaintext_pairs:
+        Cell1 = r_sheet1.cell_value(i,2)
+        Cell2 = r_sheet1.cell_value(i,3)
+        Cell3 = partial_subkey_list[j]
+        res = attack(str(Cell1), str(Cell2), str(Cell3).replace("?","0"))
+        w_sheet.write(j,2+i,res)
+        i= i+1
+    j = j+1
+
+w_workbook.close()
+print('done')
