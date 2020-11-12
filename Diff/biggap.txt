@@ -1,0 +1,308 @@
+def biggap(input_diff, key):
+
+
+    def array1(input_diff):
+        num_of_p_pairs = 65536
+
+        def change_to_be_hex(str):
+            return int(str, base=16)
+
+        def hexop(num1, num2):
+            res = str(hex(change_to_be_hex(num1) ^ change_to_be_hex(num2))).replace("0x", "").upper()
+            if len(res) < 2:
+                res = "000" + res
+            elif len(res) < 3:
+                res = "00" + res
+            elif len(res) < 4:
+                res = "0" + res
+            return res
+
+        def number_to_hex(number):
+            return hex(number)[2:].zfill(4).upper()
+
+        number_list = list(range(int(num_of_p_pairs)))
+        new_hexa_list = []
+        i = 0
+        while i < len(number_list):
+            new_hexa_list.append(number_to_hex(number_list[i]))
+            i = i + 1
+        new_new_hexa_list = []
+        j = 0
+        while j < len(new_hexa_list):
+            new_new_hexa_list.append(hexop(new_hexa_list[j], input_diff))
+            j = j + 1
+
+        def two_numbers_into_tuple(number1, number2):
+            return [number1, number2]
+
+        m = 0
+        bracket_list = []
+        while m < len(new_new_hexa_list):
+            bracket_list.append(two_numbers_into_tuple(new_hexa_list[m], new_new_hexa_list[m]))
+            m = m + 1
+
+        def get_uniques(links):
+            my_set = set([])
+            my_selection = []
+            for l in links:
+                s = "".join(sorted(l))
+                if not s in my_set:
+                    my_set.add(s)
+                    my_selection.append(l)
+            return my_selection
+
+        bracket_list = get_uniques(bracket_list)
+
+        def flatten(input):
+            new_list = []
+            for i in input:
+                for j in i:
+                    new_list.append(j)
+            return new_list
+
+        bracket_list = flatten(bracket_list)
+        b = []
+        i = 0
+        while i < len(bracket_list):
+            if (i % 2) == 0:
+                b.append(bracket_list[i])
+            i = i + 1
+        return b
+    def array2(input_diff):
+        num_of_p_pairs = 65536
+
+        def change_to_be_hex(str):
+            return int(str, base=16)
+
+        def hexop(num1, num2):
+            res = str(hex(change_to_be_hex(num1) ^ change_to_be_hex(num2))).replace("0x", "").upper()
+            if len(res) < 2:
+                res = "000" + res
+            elif len(res) < 3:
+                res = "00" + res
+            elif len(res) < 4:
+                res = "0" + res
+            return res
+
+        def number_to_hex(number):
+            return hex(number)[2:].zfill(4).upper()
+
+        number_list = list(range(int(num_of_p_pairs)))
+        new_hexa_list = []
+        i = 0
+        while i < len(number_list):
+            new_hexa_list.append(number_to_hex(number_list[i]))
+            i = i + 1
+        new_new_hexa_list = []
+        j = 0
+        while j < len(new_hexa_list):
+            new_new_hexa_list.append(hexop(new_hexa_list[j], input_diff))
+            j = j + 1
+
+        def two_numbers_into_tuple(number1, number2):
+            return [number1, number2]
+
+        m = 0
+        bracket_list = []
+        while m < len(new_new_hexa_list):
+            bracket_list.append(two_numbers_into_tuple(new_hexa_list[m], new_new_hexa_list[m]))
+            m = m + 1
+
+        def get_uniques(links):
+            my_set = set([])
+            my_selection = []
+            for l in links:
+                s = "".join(sorted(l))
+                if not s in my_set:
+                    my_set.add(s)
+                    my_selection.append(l)
+            return my_selection
+
+        bracket_list = get_uniques(bracket_list)
+
+        def flatten(input):
+            new_list = []
+            for i in input:
+                for j in i:
+                    new_list.append(j)
+            return new_list
+
+        bracket_list = flatten(bracket_list)
+        b = []
+        i = 0
+        while i < len(bracket_list):
+            if (i % 2) == 1:
+                b.append(bracket_list[i])
+            i = i + 1
+        return b
+    import random
+    def last_round_differences(plaintext1, plaintext2):
+        def change_to_be_hex(str):
+            return int(str, base=16)
+
+        def sBox(w):
+            dicto = {"0": "E", "1": "4", "2": "D", "3": "1", "4": "2", "5": "F", "6": "B", "7": "8", "8": "3",
+                     "9": "A",
+                     "A": "6", "B": "C", "C": "5", "D": "9", "E": "0", "F": "7"}
+            word = ""
+            for c in w:
+                word += dicto[c]
+            return word
+
+        def perm(word):
+            res = format(int(str(word), 16), "016b")
+            res = list(res)
+            resperm = []
+            i = 0
+            while i < 16:
+                if i == 15:
+                    resperm.append(res[i])
+                else:
+                    resperm.append(res[(i * 4) % 15])
+                i = i + 1
+            res = ''.join(resperm)
+            res = [res[i:i + 4] for i in range(0, len(res), 4)]
+
+            def dictionary(res):
+                dicto = {"0000": "0", "0001": "1", "0010": "2", "0011": "3", "0100": "4", "0101": "5",
+                         "0110": "6",
+                         "0111": "7", "1000": "8", "1001": "9",
+                         "1010": "A", "1011": "B", "1100": "C", "1101": "D", "1110": "E", "1111": "F"}
+                word = ""
+                for i in res:
+                    word = word + dicto[i]
+                return word
+
+            res = dictionary(res)
+
+            return res
+
+        def rot(w):
+            p1 = w[0:int(len(w) / 2)]
+            p2 = w[int(len(w) / 2):len(w)]
+            return p2 + p1
+
+        def hexop(num1, num2):
+            res1 = change_to_be_hex(num1) ^ change_to_be_hex(num2)
+            res1 = hex(res1)
+            res = str(res1).replace("0x", "").upper()
+            if len(res) < 2:
+                res = "0" + res
+            return res
+
+        def createW2(word, i):
+            i = i - 1
+            w0 = word[0:int(len(word) / 2)]
+            w1 = word[int(len(word) / 2):len(word)]
+            w_mid = hexop(sBox(rot(w1)), RCon[i])
+            return hexop(w_mid, w0)
+
+        def createWi(wi, wi2, i):
+            i = i - 1
+            w_mid = hexop(sBox(rot(wi2)), RCon[i])
+            res = hexop(w_mid, wi)
+            if len(res) < 2:
+                res = "0" + res
+            return res
+
+        def whitening(text, key):
+            res = hexop(text, key)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        def roundi(word, wi, wi2):
+            res = sBox(word)
+            while (len(res) < 4):
+                res = "0" + res
+            res = perm(res)
+            res = hexop(res, wi + wi2)
+            while (len(res) < 4):
+                res = "0" + res
+            return res
+
+        RCon = ["10", "20", "40", "80"]
+        w1 = key[2:4]
+        w2 = createW2(key, 1)
+        w3 = hexop(w1, w2)
+        w4 = createWi(w2, w3, 2)
+        w5 = hexop(w3, w4)
+        w6 = createWi(w4, w5, 3)
+        w7 = hexop(w5, w6)
+
+        res1 = whitening(plaintext1, key)
+        res1 = roundi(res1, w2, w3)
+        res1 = roundi(res1, w4, w5)
+        input1_to_last_round = roundi(res1, w6, w7)
+
+        res2 = whitening(plaintext2, key)
+        res2 = roundi(res2, w2, w3)
+        res2 = roundi(res2, w4, w5)
+        input2_to_last_round = roundi(res2, w6, w7)
+
+        last_round_diff = hexop(input1_to_last_round, input2_to_last_round).zfill(4)
+
+        return last_round_diff
+
+    import collections
+    def top2Frequent(nums):
+
+        freq = {}
+        for num in nums:
+            if num in freq:
+                freq[num] = freq[num] + 1
+            else:
+                freq[num] = 1
+
+        bucket = collections.defaultdict(list)
+        for key in freq:
+            f = freq[key]
+            bucket[f].append(key)
+        res = []
+        count = len(nums)
+        while len(res) < 2:
+            if bucket[count]:
+                res += bucket[count]
+            count -= 1
+        return res
+    a = sorted(list(map(last_round_differences, array1(input_diff), array2(input_diff))))
+    b = []
+    for i in list(dict.fromkeys(sorted(a))):
+        b.append(a.count(i))
+
+    c = []
+    c.append(list(dict.fromkeys(sorted(a)))[b.index(sorted(b)[-1])])
+    c.append(sorted(b)[-1])
+    c.append(list(dict.fromkeys(sorted(a)))[b.index(sorted(b)[-2])])
+    c.append(sorted(b)[-2])
+
+    def Highlight_1(Text):
+        def ColorText(text, color):
+            if color == 'red':
+                return '\033[91m' + '\033[1m' + text + '\033[0m'
+
+        Text = list(Text)
+        for i in range(0, len(Text)):
+            if Text[i] == str(0):
+                Text[i] = Text[i]
+            else:
+                Text[i] = ColorText(str(Text[i]), 'red')
+
+        def concatenate_list_data(list):
+            result = ''
+            for element in list:
+                result += str(element)
+            return result
+
+        return concatenate_list_data(Text)
+
+    def multline(liste):
+        c = ''
+        i = 0
+        while i < len(liste):
+            c = c + Highlight_1(liste[i]) + " , " + str(liste[i + 1]) + '\n'
+            i = i + 2
+        return c
+
+    return multline(c)
+print(biggap('00B0','1111'))
